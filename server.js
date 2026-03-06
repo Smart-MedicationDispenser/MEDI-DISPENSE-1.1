@@ -1,12 +1,17 @@
 require('dotenv').config();
+
 const express = require('express');
 const connectDB = require('./src/config/db');
-const medicationRoutes = require('./src/routes/medication.routes');
 
-// ROUTES IMPORTS
+// ROUTE IMPORTS
 const deviceRoutes = require('./src/routes/device.routes');
+const medicationRoutes = require('./src/routes/medication.routes');
+const patientRoutes = require('./src/routes/patient.routes');
+const prescriptionRoutes = require('./src/routes/prescription.routes');
+const eventRoutes = require('./src/routes/event.routes');
+const slotRoutes = require('./src/routes/slot.routes');
 
-// INITIALIZE EXPRESS FIRST
+// INITIALIZE EXPRESS
 const app = express();
 
 // CONNECT DATABASE
@@ -15,10 +20,13 @@ connectDB();
 // MIDDLEWARE
 app.use(express.json());
 
-app.use('/api/medications', medicationRoutes);
-
 // ROUTES
 app.use('/api/device', deviceRoutes);
+app.use('/api/medications', medicationRoutes);
+app.use('/api/patients', patientRoutes);
+app.use('/api/prescriptions', prescriptionRoutes);
+app.use('/api/events', eventRoutes);
+app.use('/api/slots', slotRoutes);
 
 // TEST ROUTE
 app.get('/', (req, res) => {
