@@ -1,52 +1,48 @@
+// 
+
 const Slot = require("../models/Slot");
+const DispenseEvent = require("../models/DispenseEvent");
 
-// Create slot
-exports.createSlot = async (req, res) => {
-  try {
-    const slot = new Slot(req.body);
-
-    await slot.save();
-
-    res.status(201).json(slot);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-
-// Get all slots
-exports.getSlots = async (req, res) => {
-  try {
-    const slots = await Slot.find()
-      .populate("deviceId")
-      .populate("medicationId");
-
-    res.json(slots);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-
-// Update stock after dispensing
-exports.updateStock = async (req, res) => {
+exports.dispenseTablet = async (req, res) => {
   try {
 
-    const { slotId } = req.params;
-
-    const slot = await Slot.findById(slotId);
+    const slot = await Slot.findById(req.params.slotId);
 
     if (!slot) {
-      return res.status(404).json({ message: "Slot not found" });
+      return res.status(404).json({ error: "Slot not found" });
     }
 
-    slot.currentStock -= 1;
+    if (slot.currentStock <= 0) {
+      return res.status(400).json({ error: "Out of stock" });
+    }
 
+    // Reduce stock
+    slot.currentStock -= 1;
     await slot.save();
 
-    res.json(slot);
+    //check low stock
+    let lowstockalert = false;
 
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    if (slot.currentStock <= slot.lowStockThreshold) {
+      lowstockalert = true;
+    }
+
+    // Create dispense event
+    const event = await DispenseEvent.create({
+      slotId: slot._id,
+      deviceId: slot.deviceId,
+      medicationId: slot.medicationId,
+      status: "dispensed"
+    });
+
+    res.json({
+      message: "Tablet dispensed successfully",
+      slot,
+      lowstockalert,
+      event
+    });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
