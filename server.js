@@ -10,12 +10,14 @@ const patientRoutes = require('./src/routes/patient.routes');
 const prescriptionRoutes = require('./src/routes/prescription.routes');
 const eventRoutes = require('./src/routes/event.routes');
 const slotRoutes = require('./src/routes/slot.routes');
+const startMedicationScheduler = require("./src/scheduler/medication.scheduler");
 
 // INITIALIZE EXPRESS
 const app = express();
 
 // CONNECT DATABASE
 connectDB();
+startMedicationScheduler();
 
 // MIDDLEWARE
 app.use(express.json());
