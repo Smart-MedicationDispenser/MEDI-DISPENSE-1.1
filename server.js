@@ -11,6 +11,13 @@ const prescriptionRoutes = require('./src/routes/prescription.routes');
 const eventRoutes = require('./src/routes/event.routes');
 const slotRoutes = require('./src/routes/slot.routes');
 const startMedicationScheduler = require("./src/scheduler/medication.scheduler");
+const analyticsRoutes = require("./src/routes/analytics.routes");
+const dashboardRoutes = require("./src/routes/dashboard.routes");
+const anomalyRoutes = require("./src/routes/anomaly.routes");
+const monitorRoutes = require("./src/routes/device.monitor.routes");
+const medicationAnalyticsRoutes = require("./src/routes/medication.analytics.routes");
+const missedDoseRoutes = require("./src/routes/missedDose.routes");
+const riskRoutes = require("./src/routes/risk.routes");
 
 // INITIALIZE EXPRESS
 const app = express();
@@ -29,6 +36,13 @@ app.use('/api/patients', patientRoutes);
 app.use('/api/prescriptions', prescriptionRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/slots', slotRoutes);
+app.use("/api/analytics", analyticsRoutes);
+app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/anomaly", anomalyRoutes);
+app.use("/api/devices", monitorRoutes);
+app.use("/api/medication", medicationAnalyticsRoutes);
+app.use("/api/analytics", missedDoseRoutes);
+app.use("/api/risk", riskRoutes);
 
 // TEST ROUTE
 app.get('/', (req, res) => {

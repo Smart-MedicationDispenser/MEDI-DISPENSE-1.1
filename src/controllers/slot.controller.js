@@ -20,11 +20,12 @@ exports.dispenseTablet = async (req, res) => {
     slot.currentStock -= 1;
     await slot.save();
 
-    //check low stock
+    // Check low stock
     let lowstockalert = false;
 
     if (slot.currentStock <= slot.lowStockThreshold) {
       lowstockalert = true;
+      console.log(`⚠ LOW STOCK ALERT: Slot ${slot.slotNumber} is running low`);
     }
 
     // Create dispense event
@@ -43,6 +44,7 @@ exports.dispenseTablet = async (req, res) => {
     });
 
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: err.message });
   }
 };
