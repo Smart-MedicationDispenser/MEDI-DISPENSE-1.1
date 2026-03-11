@@ -6,13 +6,14 @@ import DispenseChart from "./components/DispenseChart";
 import DeviceHealth from "./components/DeviceHealth";
 import MedicationAlerts from "./components/MedicationAlerts";
 import WardNurse from "./components/WardNurse";
-import { Routes, Route } from "react-router-dom"
+import {  Routes, Route } from "react-router-dom"
 
 import Dashboard from "./pages/Dashboard"
 import Patients from "./pages/Patients"
 import Medications from "./pages/Medications"
 import Devices from "./pages/Devices"
 import Alerts from "./pages/Alerts"
+import { useLocation } from "react-router-dom";
 
 // SVG Icons
 const IconPatients = () => (
@@ -49,6 +50,8 @@ const IconDispense = () => (
 );
 
 function App() {
+  const location = useLocation();
+  const isDashboard = location.pathname === "/";
 
   const [time, setTime] = useState("");
 
@@ -125,15 +128,16 @@ function App() {
     <div className="app-shell">
       <Sidebar />
 
-      <main className="main-content">
-
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
+      <Routes>
+          <Route path="/" element={null} />
           <Route path="/patients" element={<Patients />} />
           <Route path="/medications" element={<Medications />} />
           <Route path="/devices" element={<Devices />} />
           <Route path="/alerts" element={<Alerts />} />
         </Routes>
+
+      {isDashboard && (
+      <main className="main-content">
 
         {/* Header */}
         <header className="dash-header">
@@ -242,13 +246,16 @@ function App() {
         </footer>
 
       </main>
+      )}
 
       {/* RIGHT PANEL — sibling of main-content, third grid column */}
+      {isDashboard && (
       <aside className="right-panel">
         <DeviceHealth />
         <MedicationAlerts />
         <WardNurse />
       </aside>
+      )}
 
     </div>
   );

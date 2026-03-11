@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const navItems = [
   {
@@ -64,8 +63,8 @@ const navItems = [
 ];
 
 export default function Sidebar() {
-  const [active, setActive] = useState("dashboard");
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <aside className="sidebar">
@@ -103,18 +102,23 @@ export default function Sidebar() {
         {navItems.map((item) => (
           <button
             key={item.id}
-            className={`nav-item ${active === item.id ? "nav-item--active" : ""}`}
-            onClick={() => {
-              setActive(item.id);
-              navigate(item.id === "dashboard" ? "/" : `/${item.id}`);
-            }}
+            className={`nav-item ${
+              location.pathname === "/" && item.id === "dashboard"
+                ? "nav-item--active"
+                : location.pathname.startsWith(`/${item.id}`)
+                ? "nav-item--active"
+                : ""
+            }`}
+            onClick={() => navigate(item.id === "dashboard" ? "/" : `/${item.id}`)}
           >
             <span className="nav-icon">{item.icon}</span>
             <span className="nav-label">{item.label}</span>
             {item.badge && (
               <span className="nav-badge">{item.badge}</span>
             )}
-            {active === item.id && <span className="nav-active-bar" />}
+            {location.pathname === (item.id === "dashboard" ? "/" : `/${item.id}`) && (
+              <span className="nav-active-bar" />
+            )}
           </button>
         ))}
       </nav>
